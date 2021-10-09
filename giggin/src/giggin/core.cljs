@@ -1,6 +1,7 @@
 (ns giggin.core
   (:require [reagent.dom :as rdom]
             [giggin.api :as api]
+            [giggin.fb.init :refer [firebase-init]]
             [giggin.components.header :refer [header]]
             [giggin.components.gigs :refer [gigs]]
             [giggin.components.orders :refer [orders]]
@@ -19,4 +20,5 @@
   (api/fetch-gigs)
   (rdom/render
     [app]
-    (.getElementById js/document "app")))
+    (.getElementById js/document "app"))
+  (firebase-init))
