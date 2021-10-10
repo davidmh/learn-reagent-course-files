@@ -8,7 +8,7 @@
                            :value value
                            :on-change #(swap! values assoc (keyword id) (.. % -target -value))}]])
 
-(defn gig-editor [modal values]
+(defn gig-editor [modal values insert-gig]
   [:div.modal (when @modal {:class "active"})
    [:div.modal__overlay]
    [:div.modal__container
@@ -17,9 +17,9 @@
                   :type "text"
                   :value (:title @values)
                   :values values}]
-     [form-group {:id "description"
+     [form-group {:id "desc"
                   :type "text"
-                  :value (:description @values)
+                  :value (:desc @values)
                   :values values}]
      [form-group {:id "price"
                   :type "number"
@@ -41,4 +41,5 @@
       {:on-click #(reset! modal false)}
       "Cancel"]
      [:button.btn.btn--secondary
+      {:on-click #(insert-gig @values)}
       "Save"]]]])
