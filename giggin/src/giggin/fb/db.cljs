@@ -1,0 +1,10 @@
+(ns giggin.fb.db
+  (:require ["firebase/database" :refer (getDatabase ref set)]
+            [clojure.string :as str]))
+
+(defn db-ref [path]
+  (let [db (getDatabase)]
+    (ref db (str/join "/" path))))
+
+(defn db-save! [path value]
+  (set (db-ref path) value))
