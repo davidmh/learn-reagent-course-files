@@ -1,8 +1,7 @@
 (ns giggin.components.orders
   (:require [giggin.state :as state]
             [giggin.helpers :refer [format-price]]
-            [giggin.components.checkout-modal :refer [checkout-modal]]
-            [giggin.components.admin-panel :refer [admin-panel]]))
+            [giggin.components.checkout-modal :refer [checkout-modal]]))
 
 (defn total []
   (->> @state/orders
@@ -14,7 +13,6 @@
 (defn orders []
   (let [remove-from-order #(swap! state/orders dissoc %)]
     [:aside
-     [admin-panel]
      (if (empty? @state/orders)
        [:div.empty
         [:div.title "You don't have any orders"]
