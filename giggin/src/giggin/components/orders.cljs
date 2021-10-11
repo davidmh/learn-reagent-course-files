@@ -6,6 +6,7 @@
 
 (defn total []
   (->> @state/orders
+       (filter (fn [[id]] (not (get-in @state/gigs [id :sold-out]))))
        (map (fn [[id qty]] (* qty (get-in @state/gigs [id :price]))))
        (reduce +)
        format-price))
@@ -23,12 +24,14 @@
          (doall (for [[id qty] @state/orders]
             [:div.item {:key id}
              [:div.img
-              [:img {:src (get-in @state/gigs [(keyword id) :img])
-                     :alt (get-in @state/gigs [(keyword id) :title])}]]
+              [:img {:src (get-in @state/gigs [id :img])
+                     :alt (get-in @state/gigs [id :title])}]]
              [:div.content
-              [:p.title (str (get-in @state/gigs [(keyword id) :title]) " \u00D7 " qty)]]
+              (if (get-in @state/gigs [id :sold-out])
+                [:p.sold-out "Sold out"]
+                [:p.title (str (get-in @state/gigs [id :title]) " \u00D7 " qty)])]
              [:div.action
-              [:div.price (format-price (* (get-in @state/gigs [(keyword id) :price]) qty))]
+              [:div.price (format-price (* (get-in @state/gigs [id :price]) qty))]
               [:button.btn.btn--link.tooltip
                {:data-tooltip "Remove"
                 :on-click #(remove-from-order id)}

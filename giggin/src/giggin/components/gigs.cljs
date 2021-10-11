@@ -10,7 +10,7 @@
   (let [modal (r/atom {:active false})
         initial-values {:id nil :title "" :desc "" :price 0 :img "" :sold-out false}
         values (r/atom initial-values)
-        add-to-order #(swap! state/orders update % inc)
+        add-to-order #(swap! state/orders update (keyword %) inc)
         toggle-modal (fn
                        [{:keys [active gig]}]
                        (swap! modal assoc :active active)
@@ -38,7 +38,7 @@
                      :upsert-gig upsert-gig
                      :toggle-modal toggle-modal
                      :initial-values initial-values}]
-        (for [{:keys [id img title price desc] :as gig} (vals @state/gigs)]
+        (for [{:keys [id img title price desc sold-out] :as gig} (vals @state/gigs)]
           [:div.gig {:key id}
            [:img.gig__artwork.gig__edit {:src img
                                          :alt title
@@ -46,9 +46,12 @@
                                                                    :gig gig})}]
            [:div.gig__body
             [:div.gig__title
-             [:div.btn.btn--primary.float--right.tooltip
-              {:data-tooltip "Add to order"
-               :on-click #(add-to-order id)}
-              [:i.icon.icon--plus]] title]
+             (if sold-out
+               [:div.sold-out.float--right "Sold  out"]
+               [:div.btn.btn--primary.float--right.tooltip
+                {:data-tooltip "Sold out"
+                 :on-click #(add-to-order id)}
+                [:i.icon.icon--plus]])
+             title]
             [:p.gig__price (format-price price)]
             [:p.gig__desc desc]]])]])))
