@@ -19,21 +19,24 @@
         [:div.subtitle "Click on + to add an order"]]
        [:div.order
         [:div.body
-         (doall (for [[id qty] @state/orders]
-            [:div.item {:key id}
-             [:div.img
-              [:img {:src (get-in @state/gigs [id :img])
-                     :alt (get-in @state/gigs [id :title])}]]
-             [:div.content
-              (if (get-in @state/gigs [id :sold-out])
-                [:p.sold-out "Sold out"]
-                [:p.title (str (get-in @state/gigs [id :title]) " \u00D7 " qty)])]
-             [:div.action
-              [:div.price (format-price (* (get-in @state/gigs [id :price]) qty))]
-              [:button.btn.btn--link.tooltip
-               {:data-tooltip "Remove"
-                :on-click #(remove-from-order id)}
-               [:i.icon.icon--cross]]]]))]
+         (doall
+           (for [[id qty] @state/orders]
+             (let [gig (id @state/gigs)]
+               [:div.item {:key id}
+                [:div.img
+                 [:img {:src (:img gig)
+                        :alt (:title gig)}]]
+                [:div.content
+                 (if (:sold-out gig)
+                   [:p.sold-out "Sold out"]
+                   [:p.title (:title gig) " \u00D7 " qty])]
+                [:div.action
+                 [:div.price (format-price (* (:price gig) qty))]
+                 [:button.btn.btn--link.tooltip
+                  {:data-tooltip "Remove"
+                   :on-click #(remove-from-order id)}
+                  [:i.icon.icon--cross]]]])
+             ))]
         [:div.total
          [:hr]
          [:div.item
